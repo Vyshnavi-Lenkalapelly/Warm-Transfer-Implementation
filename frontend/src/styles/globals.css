@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500;
+  }
+  
+  .btn-success {
+    @apply bg-success-600 text-white hover:bg-success-700 focus:ring-success-500;
+  }
+  
+  .btn-warning {
+    @apply bg-warning-600 text-white hover:bg-warning-700 focus:ring-warning-500;
+  }
+  
+  .btn-danger {
+    @apply bg-danger-600 text-white hover:bg-danger-700 focus:ring-danger-500;
+  }
+  
+  .btn-outline {
+    @apply border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-primary-500;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+  }
+  
+  .input {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm;
+  }
+  
+  .status-indicator {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-online {
+    @apply bg-success-100 text-success-800;
+  }
+  
+  .status-busy {
+    @apply bg-warning-100 text-warning-800;
+  }
+  
+  .status-away {
+    @apply bg-gray-100 text-gray-800;
+  }
+  
+  .status-offline {
+    @apply bg-danger-100 text-danger-800;
+  }
+  
+  .pulse-ring {
+    @apply animate-pulse-slow;
+  }
+}
+
+/* LiveKit Custom Styles */
+.lk-room-container {
+  @apply h-full w-full bg-gray-900 rounded-lg overflow-hidden;
+}
+
+.lk-participant-tile {
+  @apply rounded-lg overflow-hidden border-2 border-transparent;
+}
+
+.lk-participant-tile.lk-speaking {
+  @apply border-primary-500 shadow-glow;
+}
+
+.lk-control-bar {
+  @apply bg-gray-800/90 backdrop-blur-sm;
+}
+
+.lk-button {
+  @apply hover:bg-gray-700 transition-colors;
+}
+
+/* Call Status Animations */
+.call-connecting {
+  @apply animate-pulse;
+}
+
+.call-active {
+  animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+  from {
+    box-shadow: 0 0 5px rgba(34, 197, 94, 0.3);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
+  }
+}
+
+/* Transfer Flow Animations */
+.transfer-initiated {
+  @apply animate-bounce-slow;
+}
+
+.transfer-progress {
+  animation: transfer-flow 3s ease-in-out infinite;
+}
+
+@keyframes transfer-flow {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(10px);
+    opacity: 0.7;
+  }
+}
+
+/* Loading States */
+.loading-spinner {
+  @apply animate-spin h-5 w-5 border-2 border-primary-200 border-t-primary-600 rounded-full;
+}
+
+/* Toast Notifications */
+.toast-success {
+  @apply bg-success-600 text-white;
+}
+
+.toast-error {
+  @apply bg-danger-600 text-white;
+}
+
+.toast-warning {
+  @apply bg-warning-600 text-white;
+}
+
+.toast-info {
+  @apply bg-primary-600 text-white;
+}

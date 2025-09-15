@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Warm Transfer Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #1a1a1a; color: white; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .test-section { background: #2a2a2a; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        button { background: #007acc; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #005fa3; }
+        .result { background: #333; padding: 10px; margin: 10px 0; border-radius: 4px; font-family: monospace; white-space: pre-wrap; }
+        textarea { width: 100%; height: 100px; background: #333; color: white; border: 1px solid #555; padding: 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Warm Transfer System Test</h1>
+        
+        <div class="test-section">
+            <h2>1. Test Join Token</h2>
+            <button onclick="testJoinToken()">Get Join Token</button>
+            <div id="tokenResult" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. Test Warm Transfer with Speech</h2>
+            <textarea id="transcript" placeholder="Enter conversation transcript here...">Agent1: Hello how can I help you today?
+Customer: Hi, I need help with my billing account. My payment failed last week and I can't access my important documents.
+Agent1: I understand your concern. Let me check your account status. This requires our billing specialist to resolve properly.
+Customer: Okay, I really need this fixed today as I have important work documents in my account.
+Agent1: Absolutely, I'm going to transfer you to our billing specialist who can resolve this immediately. They'll have all the details of our conversation.</textarea>
+            <br>
+            <button onclick="testWarmTransfer()">Start Warm Transfer</button>
+            <div id="transferResult" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. Test Complete Transfer</h2>
+            <button onclick="testCompleteTransfer()">Complete Transfer</button>
+            <div id="completeResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND = 'http://localhost:8000';
+        
+        async function testJoinToken() {
+            try {
+                const response = await fetch(`${BACKEND}/api/v1/warm-transfer/join-token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        identity: 'TestAgent',
+                        room: 'test-room-123'
+                    })
+                });
+                
+                const data = await response.json();
+                document.getElementById('tokenResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('tokenResult').textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        let transferData = null;
+        
+        async function testWarmTransfer() {
+            try {
+                const transcript = document.getElementById('transcript').value;
+                
+                const response = await fetch(`${BACKEND}/api/v1/warm-transfer/start-warm-transfer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        current_room: 'test-call-room',
+                        agent_a_identity: 'Agent1',
+                        agent_b_identity: 'agent_b',
+                        caller_identity: 'Customer',
+                        conversation_transcript: transcript
+                    })
+                });
+                
+                const data = await response.json();
+                transferData = data; // Store for complete transfer test
+                document.getElementById('transferResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('transferResult').textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        async function testCompleteTransfer() {
+            if (!transferData) {
+                document.getElementById('completeResult').textContent = 'Error: Please run warm transfer test first';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${BACKEND}/api/v1/warm-transfer/complete-transfer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        transfer_room: transferData.transfer_room,
+                        caller_identity: 'Customer',
+                        agent_b_identity: 'agent_b'
+                    })
+                });
+                
+                const data = await response.json();
+                document.getElementById('completeResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('completeResult').textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
